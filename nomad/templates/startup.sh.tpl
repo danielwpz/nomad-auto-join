@@ -3,7 +3,6 @@ set -e
 
 echo "Grabbing IPs..."
 PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
-PUBLIC_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
 
 function installDependencies() {
   echo "Installing dependencies..."

@@ -2,6 +2,11 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
+variable "aws_region" {
+  description = "AWS Region to use"
+  default = "us-east-1"
+}
+
 variable "namespace" {
   description = <<EOH
 The namespace to create the virtual training lab. This should describe the
@@ -51,7 +56,6 @@ variable "nomad_agents" {
   description = "The number of nomad agents"
 }
 
-variable "public_key_path" {
-  description = "The absolute path on disk to the SSH public key."
-  default     = "~/.ssh/id_rsa.pub"
+variable "key_pair_name" {
+  description = "The name of keypair to use in all instances"
 }

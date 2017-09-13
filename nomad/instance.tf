@@ -4,8 +4,7 @@ data "template_file" "config_consul" {
 
   vars {
     instances             = "${var.instances}"
-    consul_join_tag_key   = "${var.consul_join_tag_key}"
-    consul_join_tag_value = "${var.consul_join_tag_value}"
+    consul_base_addr      = "${var.consul_base_ip}"
   }
 }
 
@@ -42,8 +41,10 @@ resource "aws_launch_configuration" "default" {
   image_id      = "${data.aws_ami.ubuntu-1604.id}"
   instance_type = "${var.instance_type}"
   key_name      = "${var.key_name}"
+  # TODO
+  associate_public_ip_address = true
 
-  iam_instance_profile = "${aws_iam_instance_profile.consul-join.name}"
+  # iam_instance_profile = "${aws_iam_instance_profile.consul-join.name}"
   security_groups      = ["${var.security_group}"]
 
   user_data = "${data.template_file.startup.rendered}"
@@ -69,9 +70,4 @@ resource "aws_autoscaling_group" "default" {
     propagate_at_launch = true
   }
 
-  tag = {
-    key                 = "${var.consul_join_tag_key}"
-    value               = "${var.consul_join_tag_value}"
-    propagate_at_launch = true
-  }
 }

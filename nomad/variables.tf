@@ -1,5 +1,7 @@
 variable "namespace" {}
 
+variable "aws_region" {}
+
 variable "instances" {
   description = "The number of nomad servers."
 }
@@ -47,12 +49,8 @@ variable "consul_version" {
   description = "Version number for nomad"
 }
 
-variable "consul_join_tag_key" {
-  description = "AWS Tag to use for consul auto-join"
-}
-
-variable "consul_join_tag_value" {
-  description = "Value to search for in auto-join tag to use for consul auto-join"
+variable "consul_base_ip" {
+  
 }
 
 # Nomad configuration

@@ -1,26 +1,23 @@
-resource "aws_key_pair" "nomad" {
-  key_name   = "${var.namespace}-nomad"
-  public_key = "${file("${var.public_key_path}")}"
-}
 
 module "servers" {
   source = "./nomad"
 
   namespace = "${var.namespace}-server"
   instances = "${var.nomad_servers}"
+  aws_region = "${var.aws_region}"
 
   subnets          = ["${aws_subnet.default.*.id}"]
   vpc_id           = "${aws_vpc.default.id}"
   internal_alb_arn = "${aws_alb.internal.arn}"
   external_alb_arn = "${aws_alb.external.arn}"
   security_group   = "${aws_security_group.default.id}"
-  key_name         = "${aws_key_pair.nomad.id}"
+
+  key_name         = "${var.key_pair_name}"
 
   consul_enabled        = true
   consul_type           = "server"
   consul_version        = "${var.consul_version}"
-  consul_join_tag_key   = "${var.consul_join_tag_key}"
-  consul_join_tag_value = "${var.consul_join_tag_value}"
+  consul_base_ip        = "${aws_instance.ssh_host.private_ip}"
 
   nomad_enabled = true
   nomad_type    = "server"
@@ -34,19 +31,20 @@ module "clients" {
 
   namespace = "${var.namespace}-client"
   instances = "${var.nomad_agents}"
+  aws_region = "${var.aws_region}"
 
   subnets          = ["${aws_subnet.default.*.id}"]
   vpc_id           = "${aws_vpc.default.id}"
   internal_alb_arn = "${aws_alb.internal.arn}"
   external_alb_arn = "${aws_alb.external.arn}"
   security_group   = "${aws_security_group.default.id}"
-  key_name         = "${aws_key_pair.nomad.id}"
+
+  key_name         = "${var.key_pair_name}"
 
   consul_enabled        = true
   consul_type           = "client"
   consul_version        = "${var.consul_version}"
-  consul_join_tag_key   = "${var.consul_join_tag_key}"
-  consul_join_tag_value = "${var.consul_join_tag_value}"
+  consul_base_ip        = "${aws_instance.ssh_host.private_ip}"
 
   nomad_enabled = true
   nomad_type    = "client"

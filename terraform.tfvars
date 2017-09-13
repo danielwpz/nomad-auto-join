@@ -13,3 +13,5 @@ nomad_servers = 3
 nomad_agents = 2
 
 hashiui_version = "0.18.0"
+
+key_pair_name = "peizan"
