@@ -62,6 +62,7 @@ resource "aws_autoscaling_group" "default" {
     aws_alb_target_group.nomad.*.arn,
     aws_alb_target_group.consul.*.arn,
     aws_alb_target_group.ui.*.arn,
+    aws_alb_target_group.github.*.arn,
     aws_alb_target_group.http_test.*.arn)}"]
 
   tag = {

@@ -51,6 +51,20 @@ resource "aws_alb_target_group" "ui" {
   }
 }
 
+resource "aws_alb_target_group" "github" {
+  count = "${var.nomad_type == "client" ? 1 : 0}"
+
+  name     = "${var.namespace}-github"
+  port     = 5001
+  protocol = "HTTP"
+  vpc_id   = "${var.vpc_id}"
+
+  health_check {
+    path = "/status/health"
+    port = 5001
+  }
+}
+
 resource "aws_alb_listener" "nomad" {
   count = "${var.nomad_type == "server" ? 1 : 0}"
 
@@ -86,6 +100,19 @@ resource "aws_alb_listener" "http" {
 
   default_action {
     target_group_arn = "${aws_alb_target_group.http_test.arn}"
+    type             = "forward"
+  }
+}
+
+resource "aws_alb_listener" "github-connector" {
+  count = "${var.nomad_type == "client" ? 1 : 0}"
+
+  load_balancer_arn = "${var.internal_alb_arn}"
+  port              = "5001"
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = "${aws_alb_target_group.github.arn}"
     type             = "forward"
   }
 }
